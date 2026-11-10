@@ -1,0 +1,9 @@
+{
+  "name": "DaySpark — Daily Tasks",
+  "short_name": "DaySpark",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f2ff",
+  "theme_color": "#7657f6",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
