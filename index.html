@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7866e8">
+<title>DaySpark – Daily Planner</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+    --purple: #7866e8;
+    --purple-dark: #6351d2;
+    --pink: #ff83a8;
+    --bg: #f7f6ff;
+    --text: #28243d;
+    --muted: #89869e;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #f6f4ff, #fff4f8);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.app {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-family: 'Nunito', sans-serif;
+    font-size: 27px;
+    font-weight: 900;
+    color: var(--purple);
+}
+
+.logo span {
+    color: var(--pink);
+}
+
+.header-date {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.hero {
+    background: linear-gradient(135deg, #7866e8, #a18df5);
+    color: white;
+    padding: 27px;
+    border-radius: 25px;
+    margin-bottom: 22px;
+    box-shadow: 0 12px 30px #7866e830;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "✦";
+    position: absolute;
+    font-size: 110px;
+    right: 15px;
+    top: -25px;
+    opacity: .12;
+}
+
+.hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.hero p {
+    font-size: 13px;
+    opacity: .9;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 23px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.progress-track {
+    height: 9px;
+    background: #ffffff40;
+    border-radius: 20px;
+    margin-top: 9px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 20px;
+    transition: width .4s ease;
+}
+
+.date-section {
+    background: white;
+    padding: 18px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px #32256b0b;
+}
+
+.date-title {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.date-buttons {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.date-btn {
+    border: 1px solid #e9e5ff;
+    background: #faf9ff;
+    color: var(--purple);
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.date-btn.active {
+    background: var(--purple);
+    color: white;
+    border-color: var(--purple);
+}
+
+.date-btn:hover {
+    transform: translateY(-2px);
+}
+
+.date-picker {
+    border: 1px solid #e9e5ff;
+    background: #faf9ff;
+    padding: 9px;
+    border-radius: 12px;
+    font-family: inherit;
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 12px;
+    max-width: 100%;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 23px 3px 13px;
+}
+
+.section-heading h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 19px;
+}
+
+.task-count {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.add-box {
+    background: white;
+    padding: 17px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px #32256b0b;
+    margin-bottom: 15px;
+}
+
+.input-row {
+    display: flex;
+    gap: 9px;
+}
+
+#taskInput {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #eeeafa;
+    background: #faf9ff;
+    padding: 14px;
+    border-radius: 12px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#taskInput:focus {
+    border-color: var(--purple);
+}
+
+.add-btn {
+    border: none;
+    background: var(--purple);
+    color: white;
+    padding: 0 19px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.add-btn:hover {
+    background: var(--purple-dark);
+    transform: scale(1.04);
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px #32256b09;
+    border-left: 4px solid var(--task-color, #a18df5);
+    animation: appear .3s ease;
+    transition: .2s;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.check {
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
+    border: 2px solid #d8d3ed;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .2s;
+    color: white;
+    font-size: 14px;
+}
+
+.task.completed .check {
+    background: #69cba1;
+    border-color: #69cba1;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+}
+
+.task.completed .task-text {
+    text-decoration: line-through;
+    color: #aaa6b8;
+}
+
+.task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.action-btn {
+    border: none;
+    background: #f6f4ff;
+    color: #77718f;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.action-btn:hover {
+    background: #eeeaff;
+}
+
+.delete-btn:hover {
+    background: #fff0f2;
+    color: #ef6681;
+}
+
+.empty {
+    background: white;
+    text-align: center;
+    padding: 35px 15px;
+    border-radius: 18px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.empty .emoji {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.history-box {
+    background: white;
+    padding: 19px;
+    border-radius: 20px;
+    margin-top: 27px;
+    box-shadow: 0 5px 20px #32256b0b;
+}
+
+.history-box h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 19px;
+    margin-bottom: 13px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #faf9ff;
+    padding: 12px;
+    border-radius: 12px;
+    gap: 10px;
+}
+
+.history-date {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.history-stats {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.history-open {
+    border: none;
+    background: #eeeaff;
+    color: var(--purple);
+    padding: 8px 11px;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.backup {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.backup button {
+    flex: 1;
+    border: 1px solid #e7e2ff;
+    background: white;
+    color: var(--purple);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 25px 0 10px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: #302b48;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: .3s;
+    z-index: 10;
+    max-width: 90%;
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@media(max-width: 480px) {
+    body {
+        padding: 13px;
+    }
+
+    .hero {
+        padding: 23px;
+    }
+
+    .hero h1 {
+        font-size: 22px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .date-section {
+        padding: 15px;
+    }
+
+    .task {
+        padding: 13px 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+        <div class="logo">Day<span>Spark</span> ✦</div>
+        <div class="header-date" id="headerDate"></div>
+    </header>
+
+    <section class="hero">
+        <h1 id="greeting">Make today count! ✨</h1>
+        <p id="heroSubtitle">Small steps lead to big achievements.</p>
+
+        <div class="progress-info">
+            <span>Daily progress</span>
+            <span id="progressText">0%</span>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </section>
+
+    <section class="date-section">
+        <div class="date-title">PLAN YOUR DAY</div>
+
+        <div class="date-buttons">
+            <button class="date-btn active" id="todayBtn" onclick="selectToday()">
+                Today
+            </button>
+
+            <button class="date-btn" id="tomorrowBtn" onclick="selectTomorrow()">
+                Tomorrow →
+            </button>
+
+            <input
+                type="date"
+                class="date-picker"
+                id="datePicker"
+                onchange="selectCustomDate(this.value)"
+            >
+        </div>
+    </section>
+
+    <div class="section-heading">
+        <h2 id="taskHeading">Today's Tasks</h2>
+        <span class="task-count" id="taskCount">0 tasks</span>
+    </div>
+
+    <section class="add-box">
+        <div class="input-row">
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="What do you want to accomplish?"
+                maxlength="120"
+            >
+            <button class="add-btn" onclick="addTask()">+</button>
+        </div>
+    </section>
+
+    <section class="task-list" id="taskList"></section>
+
+    <section class="history-box">
+        <h2>📅 Your History</h2>
+        <div class="history-list" id="historyList"></div>
+    </section>
+
+    <section class="backup">
+        <button onclick="exportData()">↥ Export Backup</button>
+        <button onclick="document.getElementById('importFile').click()">↧ Import Backup</button>
+        <input
+            type="file"
+            id="importFile"
+            accept=".json,application/json"
+            hidden
+            onchange="importData(event)"
+        >
+    </section>
+
+    <footer>
+        Made for your everyday progress ✨
+    </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = "dayspark_tasks_v1";
+
+let selectedDate = getDateString(new Date());
+
+const colors = [
+    "#a18df5",
+    "#ff83a8",
+    "#69cba1",
+    "#ffb86b",
+    "#65b9e8",
+    "#e69ad9"
+];
+
+let allTasks = loadTasks();
+
+function getDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function loadTasks() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch {
+        return {};
+    }
+}
+
+function saveTasks() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
+}
+
+function getTasks() {
+    return allTasks[selectedDate] || [];
+}
+
+function ensureDate() {
+    if (!allTasks[selectedDate]) {
+        allTasks[selectedDate] = [];
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString + "T12:00:00");
+
+    return date.toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2200);
+}
+
+function updateHeader() {
+    const today = getDateString(new Date());
+
+    document.getElementById("headerDate").textContent =
+        new Date().toLocaleDateString("en-IN", {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+        });
+
+    const isToday = selectedDate === today;
+
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
+    const isTomorrow = selectedDate === getDateString(tomorrowDate);
+
+    document.getElementById("todayBtn").classList.toggle("active", isToday);
+    document.getElementById("tomorrowBtn").classList.toggle("active", isTomorrow);
+
+    document.getElementById("datePicker").value = selectedDate;
+
+    if (isToday) {
+        document.getElementById("taskHeading").textContent = "Today's Tasks";
+    } else if (isTomorrow) {
+        document.getElementById("taskHeading").textContent = "Tomorrow's Tasks";
+    } else {
+        document.getElementById("taskHeading").textContent =
+            formatDate(selectedDate) + " Tasks";
+    }
+
+    if (selectedDate > today) {
+        document.getElementById("greeting").textContent = "Plan ahead! 🚀";
+        document.getElementById("heroSubtitle").textContent =
+            "Prepare today for a better tomorrow.";
+    } else {
+        document.getElementById("greeting").textContent = "Make today count! ✨";
+        document.getElementById("heroSubtitle").textContent =
+            "Small steps lead to big achievements.";
+    }
+}
+
+function selectDate(date) {
+    selectedDate = date;
+    render();
+}
+
+function selectToday() {
+    selectDate(getDateString(new Date()));
+}
+
+function selectTomorrow() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    selectDate(getDateString(tomorrow));
+}
+
+function selectCustomDate(date) {
+    if (!date) return;
+    selectDate(date);
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    const text = input.value.trim();
+
+    if (!text) {
+        showToast("Please enter a task first!");
+        input.focus();
+        return;
+    }
+
+    ensureDate();
+
+    allTasks[selectedDate].push({
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        text: text,
+        completed: false,
+        color: colors[Math.floor(Math.random() * colors.length)]
+    });
+
+    saveTasks();
+
+    input.value = "";
+    render();
+
+    showToast("Task added successfully! ✨");
+}
+
+function toggleTask(id) {
+    const task = getTasks().find(task => task.id === id);
+
+    if (!task) return;
+
+    task.completed = !task.completed;
+
+    saveTasks();
+    render();
+
+    if (task.completed) {
+        showToast("Great work! Keep going 🎉");
+    }
+}
+
+function editTask(id) {
+    const task = getTasks().find(task => task.id === id);
+
+    if (!task) return;
+
+    const newText = prompt("Edit your task:", task.text);
+
+    if (newText === null) return;
+
+    if (!newText.trim()) {
+        showToast("Task cannot be empty!");
+        return;
+    }
+
+    task.text = newText.trim();
+
+    saveTasks();
+    render();
+
+    showToast("Task updated!");
+}
+
+function deleteTask(id) {
+    if (!confirm("Delete this task?")) return;
+
+    allTasks[selectedDate] = getTasks().filter(task => task.id !== id);
+
+    saveTasks();
+    render();
+
+    showToast("Task deleted.");
+}
+
+function renderTasks() {
+    const list = document.getElementById("taskList");
+    const tasks = getTasks();
+
+    list.innerHTML = "";
+
+    if (tasks.length === 0) {
+        list.innerHTML = `
+            <div class="empty">
+                <div class="emoji">🌱</div>
+                <strong>No tasks yet!</strong>
+                <p style="margin-top:6px">
+                    Add your first task and make this day productive.
+                </p>
+            </div>
+        `;
+    }
+
+    tasks.forEach(task => {
+        const item = document.createElement("div");
+
+        item.className = "task" + (task.completed ? " completed" : "");
+        item.style.setProperty("--task-color", task.color || "#a18df5");
+
+        const check = document.createElement("div");
+        check.className = "check";
+        check.textContent = task.completed ? "✓" : "";
+        check.addEventListener("click", () => toggleTask(task.id));
+
+        const text = document.createElement("div");
+        text.className = "task-text";
+        text.textContent = task.text;
+
+        const actions = document.createElement("div");
+        actions.className = "task-actions";
+
+        const edit = document.createElement("button");
+        edit.className = "action-btn";
+        edit.textContent = "✎";
+        edit.title = "Edit task";
+        edit.addEventListener("click", () => editTask(task.id));
+
+        const remove = document.createElement("button");
+        remove.className = "action-btn delete-btn";
+        remove.textContent = "×";
+        remove.title = "Delete task";
+        remove.addEventListener("click", () => deleteTask(task.id));
+
+        actions.appendChild(edit);
+        actions.appendChild(remove);
+
+        item.appendChild(check);
+        item.appendChild(text);
+        item.appendChild(actions);
+
+        list.appendChild(item);
+    });
+
+    const completed = tasks.filter(task => task.completed).length;
+    const total = tasks.length;
+
+    const percentage = total === 0
+        ? 0
+        : Math.round((completed / total) * 100);
+
+    document.getElementById("taskCount").textContent =
+        `${completed}/${total} completed`;
+
+    document.getElementById("progressText").textContent =
+        percentage + "%";
+
+    document.getElementById("progressFill").style.width =
+        percentage + "%";
+}
+
+function renderHistory() {
+    const history = document.getElementById("historyList");
+
+    history.innerHTML = "";
+
+    const dates = Object.keys(allTasks).sort((a, b) => b.localeCompare(a));
+
+    if (dates.length === 0) {
+        history.innerHTML = `
+            <div class="empty">
+                Your daily history will appear here.
+            </div>
+        `;
+        return;
+    }
+
+    dates.forEach(date => {
+        const tasks = allTasks[date] || [];
+        const completed = tasks.filter(task => task.completed).length;
+
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        const info = document.createElement("div");
+
+        const dateText = document.createElement("div");
+        dateText.className = "history-date";
+        dateText.textContent = formatDate(date);
+
+        const stats = document.createElement("div");
+        stats.className = "history-stats";
+        stats.textContent = `${completed} of ${tasks.length} tasks completed`;
+
+        info.appendChild(dateText);
+        info.appendChild(stats);
+
+        const button = document.createElement("button");
+        button.className = "history-open";
+        button.textContent = date === selectedDate ? "Viewing" : "View";
+        button.addEventListener("click", () => selectDate(date));
+
+        item.appendChild(info);
+        item.appendChild(button);
+
+        history.appendChild(item);
+    });
+}
+
+function render() {
+    updateHeader();
+    renderTasks();
+    renderHistory();
+}
+
+function exportData() {
+    const data = JSON.stringify(allTasks, null, 2);
+
+    const blob = new Blob([data], {
+        type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "dayspark-backup.json";
+    link.click();
+
+    URL.revokeObjectURL(url);
+
+    showToast("Backup downloaded!");
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+
+            if (
+                !imported ||
+                typeof imported !== "object" ||
+                Array.isArray(imported)
+            ) {
+                throw new Error("Invalid backup");
+            }
+
+            if (!confirm("Import this backup? Existing data will be replaced.")) {
+                event.target.value = "";
+                return;
+            }
+
+            allTasks = imported;
+
+            saveTasks();
+            render();
+
+            showToast("Backup imported successfully!");
+        } catch {
+            showToast("Invalid backup file.");
+        }
+
+        event.target.value = "";
+    };
+
+    reader.readAsText(file);
+}
+
+document.getElementById("taskInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        addTask();
+    }
+});
+
+render();
+</script>
+
+</body>
+</html>
