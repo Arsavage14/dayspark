@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7657f6">
+<meta name="description" content="A colorful daily task planner with day-by-day history.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>DaySpark — Daily Tasks</title>
+<style>
+:root{--ink:#24213a;--muted:#77748d;--purple:#7657f6;--pink:#ff6eaa;--yellow:#ffd166;--mint:#62d6b2;--paper:#fff;--bg:#f5f2ff;--line:#eeeaf8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 8% 0%,#ffe4f0 0,transparent 30%),radial-gradient(circle at 100% 10%,#e2dcff 0,transparent 32%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.wrap{max-width:760px;margin:auto;padding:24px 17px 55px}
+header{display:flex;align-items:center;justify-content:space-between;margin:6px 0 22px}.brand{display:flex;gap:11px;align-items:center}.logo{width:43px;height:43px;border-radius:15px;background:linear-gradient(135deg,var(--purple),var(--pink));display:grid;place-items:center;color:white;font-size:23px;box-shadow:0 8px 20px #7657f644}.brand h1{font-size:21px;margin:0;letter-spacing:-.7px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:1px}.top-actions{display:flex;gap:8px}.iconbtn{border:1px solid var(--line);background:#ffffffc9;border-radius:12px;padding:9px 11px;color:var(--ink)}
+.hero{background:linear-gradient(120deg,#7657f6,#9b72ff 55%,#ff80b5);border-radius:25px;padding:23px;color:white;position:relative;overflow:hidden;box-shadow:0 15px 35px #7657f633}.hero:after{content:"✦";position:absolute;right:22px;top:5px;font-size:90px;opacity:.16;transform:rotate(14deg)}.hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;position:relative;z-index:1}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:800;opacity:.8}.hero h2{font-size:26px;letter-spacing:-.8px;margin:6px 0}.hero p{margin:0;font-size:13px;opacity:.86}.date-pill{background:#ffffff27;border:1px solid #ffffff42;border-radius:12px;padding:9px 11px;font-size:12px;white-space:nowrap}.progress-area{margin-top:22px;position:relative;z-index:1}.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px}.track{height:9px;background:#ffffff3b;border-radius:20px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#ffe08b,#fff);border-radius:20px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.add-card,.task-card,.history-card{background:var(--paper);border:1px solid #eeeaf7;border-radius:19px;box-shadow:0 7px 22px #39246b09}.add-card{padding:15px;margin-top:17px}.add-row{display:flex;gap:9px}.task-input{min-width:0;flex:1;border:1.5px solid var(--line);background:#faf9ff;border-radius:13px;padding:13px 14px;outline:none;color:var(--ink)}.task-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7657f61b}.add-btn{border:0;background:var(--ink);color:white;border-radius:13px;padding:0 17px;font-weight:750;transition:transform .15s,background .2s}.add-btn:active{transform:scale(.95)}.add-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:11px;gap:8px}.hint{font-size:11px;color:var(--muted)}.color-dots{display:flex;gap:6px}.dot{width:15px;height:15px;border:2px solid white;border-radius:50%;box-shadow:0 0 0 1px #ddd;cursor:pointer}.dot.selected{box-shadow:0 0 0 2px var(--ink)}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 11px}.section-head h3{font-size:16px;margin:0;letter-spacing:-.3px}.count{font-size:11px;color:var(--muted);background:#fff;padding:6px 9px;border-radius:20px}
+.task-list{display:grid;gap:9px}.task-card{display:flex;align-items:center;gap:12px;padding:13px 13px;animation:pop .35s both;transition:transform .2s,opacity .2s}.task-card:hover{transform:translateY(-2px)}@keyframes pop{from{opacity:0;transform:translateY(9px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}.check{width:25px;height:25px;flex:0 0 25px;border:2px solid #d9d5e8;border-radius:9px;background:white;display:grid;place-items:center;color:white;transition:.2s}.task-card.done .check{background:var(--mint);border-color:var(--mint);animation:checkpop .25s}.check svg{width:15px;height:15px}@keyframes checkpop{50%{transform:scale(1.2)}}.task-text{flex:1;min-width:0;font-size:14px;overflow-wrap:anywhere}.task-card.done .task-text{text-decoration:line-through;color:#a5a2b2}.task-tag{width:5px;height:28px;border-radius:8px;flex:0 0 5px}.task-actions{display:flex;gap:4px}.mini{border:0;background:transparent;color:#a6a2b4;padding:6px;border-radius:8px}.mini:hover{background:#f5f2ff;color:var(--purple)}.empty{padding:28px 15px;text-align:center;color:var(--muted);background:#ffffff9c;border:1px dashed #dcd5f1;border-radius:18px}.empty .emoji{font-size:28px}.empty strong{display:block;color:var(--ink);margin:7px 0 4px}.empty p{font-size:12px;margin:0}
+.history-card{padding:16px;margin-top:25px}.history-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}.history-title h3{margin:0;font-size:15px}.history-title span{font-size:11px;color:var(--muted)}.history-list{display:grid;gap:7px}.day-row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fcfbff;padding:10px 11px;border-radius:12px;text-align:left;width:100%;color:var(--ink)}.day-row.active{border-color:var(--purple);background:#f6f2ff}.day-date{flex:1;font-size:12px;font-weight:700}.day-meta{font-size:11px;color:var(--muted)}.day-bar{width:48px;height:6px;background:#eeeaf8;border-radius:9px;overflow:hidden}.day-bar i{display:block;height:100%;background:var(--mint);border-radius:9px}.footer{display:flex;justify-content:center;gap:8px;margin-top:18px;color:#9692a8;font-size:10px}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#25213c;color:white;padding:11px 16px;border-radius:12px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 8px 25px #0002;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-back{position:fixed;inset:0;background:#211b3b66;display:none;place-items:center;padding:20px;z-index:20}.modal-back.show{display:grid}.modal{background:white;border-radius:20px;padding:20px;width:min(100%,390px);box-shadow:0 20px 60px #17102b44}.modal h3{margin:0 0 8px}.modal p{font-size:13px;color:var(--muted);line-height:1.5}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:17px}.secondary{border:1px solid var(--line);background:white;padding:10px 13px;border-radius:11px}.primary{border:0;background:var(--purple);color:white;padding:10px 13px;border-radius:11px}
+@media(min-width:600px){.wrap{padding-top:35px}.hero{padding:28px}.hero h2{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand"><div class="logo">✦</div><div><h1>DaySpark</h1><small>little steps, every day</small></div></div><div class="top-actions"><button class="iconbtn" id="todayBtn" title="Go to today">Today</button><button class="iconbtn" id="backupBtn" title="Export backup">↥</button><button class="iconbtn" id="importBtn" title="Import backup">↧</button></div></header>
+<section class="hero"><div class="hero-top"><div><div class="eyebrow">Your daily dashboard</div><h2 id="greeting">Make today count.</h2><p id="heroSub">One task at a time. You've got this!</p></div><div class="date-pill" id="datePill"></div></div><div class="progress-area"><div class="progress-label"><span>Daily progress</span><strong id="progressText">0%</strong></div><div class="track"><div class="fill" id="progressFill"></div></div></div></section>
+<section class="add-card"><div class="add-row"><input class="task-input" id="taskInput" maxlength="120" placeholder="Add a task for today..." autocomplete="off"><button class="add-btn" id="addBtn">＋ Add</button></div><div class="add-bottom"><span class="hint">Choose a color for your task</span><div class="color-dots" id="colorDots"><span class="dot selected" data-color="#7657f6" style="background:#7657f6"></span><span class="dot" data-color="#ff6eaa" style="background:#ff6eaa"></span><span class="dot" data-color="#ffbd59" style="background:#ffbd59"></span><span class="dot" data-color="#55c9a5" style="background:#55c9a5"></span><span class="dot" data-color="#55a7e8" style="background:#55a7e8"></span></div></div></section>
+<div class="section-head"><h3 id="listHeading">Today's tasks</h3><span class="count" id="taskCount">0 tasks</span></div>
+<div class="task-list" id="taskList"></div>
+<section class="history-card"><div class="history-title"><h3>📅 Your day-by-day history</h3><span>Tap a date to revisit</span></div><div class="history-list" id="historyList"></div></section>
+<div class="footer"><span>Saved on this device</span><span>•</span><span>Keep your streak going ✨</span></div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal-back" id="modalBack"><div class="modal"><h3 id="modalTitle">Edit task</h3><p id="modalText">Update the task below.</p><input class="task-input" id="editInput" maxlength="120" style="width:100%"><div class="modal-actions"><button class="secondary" id="cancelModal">Cancel</button><button class="primary" id="saveModal">Save</button></div></div></div>
+<input type="file" id="importFile" accept="application/json" hidden>
+<script>
+const STORE='dayspark-v1';
+const colors=['#7657f6','#ff6eaa','#ffbd59','#55c9a5','#55a7e8'];
+let data=load(), selectedDate=localDate(), selectedColor=colors[0], editingId=null;
+function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+function load(){try{return JSON.parse(localStorage.getItem(STORE))||{days:{}}}catch(e){return {days:{}}}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data))}
+function day(){if(!data.days[selectedDate])data.days[selectedDate]=[];return data.days[selectedDate]}
+function pretty(key){return new Date(key+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)}
+function render(){
+ const tasks=day(),done=tasks.filter(t=>t.done).length,pct=tasks.length?Math.round(done/tasks.length*100):0;
+ document.getElementById('datePill').textContent=pretty(selectedDate).split(',').slice(0,2).join(',');
+ document.getElementById('greeting').textContent=selectedDate===localDate()?'Make today count.':'A look back in time.';
+ document.getElementById('heroSub').textContent=tasks.length?(done===tasks.length?'All done! Brilliant work today 🎉':`${done} of ${tasks.length} tasks completed. Keep going!`):'One task at a time. You’ve got this!';
+ document.getElementById('progressText').textContent=pct+'%';document.getElementById('progressFill').style.width=pct+'%';
+ document.getElementById('listHeading').textContent=selectedDate===localDate()?"Today's tasks":'Tasks for '+pretty(selectedDate);
+ document.getElementById('taskCount').textContent=`${done}/${tasks.length} done`;
+ const list=document.getElementById('taskList');
+ if(!tasks.length){list.innerHTML='<div class="empty"><div class="emoji">🌱</div><strong>A fresh page!</strong><p>Add your first task above and make today yours.</p></div>'}
+ else list.innerHTML=tasks.map(t=>`<div class="task-card ${t.done?'done':''}" data-id="${t.id}"><span class="task-tag" style="background:${t.color}"></span><button class="check" data-action="toggle" aria-label="Mark task complete">${t.done?'<svg viewBox="0 0 20 20" fill="none"><path d="m4 10 4 4 8-9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</button><div class="task-text">${escapeHtml(t.text)}</div><div class="task-actions"><button class="mini" data-action="edit" title="Edit">✎</button><button class="mini" data-action="delete" title="Delete">×</button></div></div>`).join('');
+ renderHistory();
+}
+function renderHistory(){
+ const keys=Object.keys(data.days).filter(k=>data.days[k]?.length).sort((a,b)=>b.localeCompare(a));
+ const hist=document.getElementById('historyList');
+ if(!keys.length){hist.innerHTML='<div class="hint" style="text-align:center;padding:8px">Your saved days will appear here.</div>';return}
+ hist.innerHTML=keys.map(k=>{let ts=data.days[k],d=ts.filter(t=>t.done).length,p=ts.length?Math.round(d/ts.length*100):0;return `<button class="day-row ${k===selectedDate?'active':''}" data-date="${k}"><span class="day-date">${pretty(k)}</span><span class="day-meta">${d}/${ts.length}</span><span class="day-bar"><i style="width:${p}%"></i></span></button>`}).join('');
+}
+function add(){const input=document.getElementById('taskInput'),text=input.value.trim();if(!text){input.focus();return}day().push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,done:false,color:selectedColor});save();input.value='';render();toast('Task added ✨')}
+document.getElementById('addBtn').onclick=add;document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')add()});
+document.getElementById('colorDots').onclick=e=>{const d=e.target.closest('.dot');if(!d)return;selectedColor=d.dataset.color;document.querySelectorAll('.dot').forEach(x=>x.classList.toggle('selected',x===d))};
+document.getElementById('taskList').onclick=e=>{const card=e.target.closest('.task-card');if(!card)return;const t=day().find(x=>x.id===card.dataset.id);if(!t)return;const action=e.target.closest('[data-action]')?.dataset.action;if(action==='toggle'){t.done=!t.done;save();render();if(t.done&&day().every(x=>x.done))toast('Day completed! 🎉')}if(action==='delete'){data.days[selectedDate]=day().filter(x=>x.id!==t.id);save();render();toast('Task removed')}if(action==='edit'){editingId=t.id;document.getElementById('editInput').value=t.text;document.getElementById('modalBack').classList.add('show');document.getElementById('editInput').focus()}};
+document.getElementById('historyList').onclick=e=>{const b=e.target.closest('[data-date]');if(!b)return;selectedDate=b.dataset.date;render();window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('todayBtn').onclick=()=>{selectedDate=localDate();render()};
+document.getElementById('cancelModal').onclick=()=>document.getElementById('modalBack').classList.remove('show');
+document.getElementById('saveModal').onclick=()=>{const t=day().find(x=>x.id===editingId),v=document.getElementById('editInput').value.trim();if(t&&v){t.text=v;save();render()}document.getElementById('modalBack').classList.remove('show')};
+document.getElementById('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dayspark-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup downloaded')};
+document.getElementById('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const obj=JSON.parse(await f.text());if(!obj.days||typeof obj.days!=='object')throw Error();if(confirm('Import this backup? It will replace the tasks currently saved on this device.')){data=obj;save();selectedDate=localDate();render();toast('Backup restored')}}catch(err){alert('That file does not look like a DaySpark backup.')}e.target.value=''};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+render();
+</script>
+</body></html>
