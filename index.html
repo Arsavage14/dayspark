@@ -5,9 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#7455e8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<link rel="manifest" href="./manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DaySpark">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>DaySpark ✦ Daily Planner</title>
 
 <style>
@@ -1066,6 +1068,13 @@ document.getElementById("taskInput").addEventListener("keydown", function(e) {
 
 render();
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+            .catch(error => console.error("SW registration failed:", error));
+    });
+}
+</script>
 </body>
 </html>
