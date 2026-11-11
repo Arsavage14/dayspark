@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,1069 +10,263 @@
 <meta name="apple-mobile-web-app-title" content="DaySpark">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>DaySpark ✦ Daily Planner</title>
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
-
-:root {
-    --purple: #7959e8;
-    --pink: #ff78ad;
-    --blue: #65b8ef;
-    --yellow: #ffc96b;
-    --green: #65d5a5;
-    --text: #30294a;
-    --muted: #918ba8;
-    --bg: #f8f6ff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background:
-        radial-gradient(circle at 5% 5%, #f1eaff 0, transparent 30%),
-        radial-gradient(circle at 95% 15%, #ffe9f2 0, transparent 30%),
-        linear-gradient(135deg, #f8f6ff, #fff8fb);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 22px 15px;
-}
-
-.app {
-    max-width: 720px;
-    margin: auto;
-}
-
-/* HEADER */
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.logo {
-    font-family: 'Nunito', sans-serif;
-    font-size: 29px;
-    font-weight: 900;
-    letter-spacing: -1px;
-    color: #7656e7;
-}
-
-.logo span {
-    color: #ff78ad;
-}
-
-.logo small {
-    font-size: 17px;
-}
-
-.header-date {
-    color: #918ba8;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-/* HERO */
-
-.hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 28px;
-    padding: 29px;
-    color: white;
-    background: linear-gradient(120deg, #7252df, #a178f3 60%, #d58ae9);
-    box-shadow: 0 14px 35px #8563e638;
-    margin-bottom: 23px;
-}
-
-.hero::before {
-    content: "✦";
-    position: absolute;
-    right: 30px;
-    top: -30px;
-    font-size: 145px;
-    opacity: .13;
-}
-
-.hero::after {
-    content: "✧";
-    position: absolute;
-    right: 120px;
-    bottom: -35px;
-    font-size: 105px;
-    opacity: .15;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 1;
-}
-
-.hero h1 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 27px;
-    font-weight: 900;
-    margin-bottom: 6px;
-}
-
-.hero p {
-    font-size: 13px;
-    opacity: .9;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 25px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.progress-track {
-    width: 100%;
-    height: 11px;
-    border-radius: 20px;
-    background: #ffffff40;
-    margin-top: 9px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #fff, #ffe3f0);
-    border-radius: 20px;
-    transition: width .5s ease;
-}
-
-/* DATE PLANNER */
-
-.date-section {
-    background: white;
-    border-radius: 22px;
-    padding: 19px;
-    box-shadow: 0 7px 25px #6950a30d;
-    margin-bottom: 25px;
-}
-
-.section-label {
-    color: #9991ae;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    margin-bottom: 13px;
-}
-
-.date-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.date-btn {
-    border: 1px solid #eae4ff;
-    background: #faf9ff;
-    color: #7959e8;
-    border-radius: 13px;
-    padding: 11px 17px;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: .25s;
-}
-
-.date-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 13px #7959e825;
-}
-
-.date-btn.active {
-    color: white;
-    border-color: transparent;
-    background: linear-gradient(120deg, #7655e5, #a47cf0);
-    box-shadow: 0 5px 14px #7959e840;
-}
-
-.date-picker {
-    min-width: 130px;
-    max-width: 100%;
-    padding: 10px;
-    border: 1px solid #eae4ff;
-    border-radius: 12px;
-    background: #faf9ff;
-    color: #7959e8;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-/* TASK SECTION */
-
-.section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 3px 14px;
-}
-
-.section-heading h2 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 21px;
-    font-weight: 900;
-}
-
-.task-count {
-    color: #9690a9;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-/* ADD TASK */
-
-.add-box {
-    background: white;
-    padding: 16px;
-    border-radius: 20px;
-    box-shadow: 0 7px 25px #6950a30d;
-    margin-bottom: 17px;
-}
-
-.input-row {
-    display: flex;
-    gap: 10px;
-}
-
-#taskInput {
-    flex: 1;
-    min-width: 0;
-    border: 2px solid #f0ecfa;
-    background: #fbfaff;
-    border-radius: 13px;
-    padding: 14px;
-    outline: none;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--text);
-    transition: .2s;
-}
-
-#taskInput:focus {
-    border-color: #a58cf0;
-    background: white;
-}
-
-.add-btn {
-    width: 49px;
-    min-width: 49px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #7858e7, #a17cf1);
-    color: white;
-    font-size: 27px;
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: 0 5px 13px #7959e83b;
-    transition: .2s;
-}
-
-.add-btn:hover {
-    transform: scale(1.06) rotate(5deg);
-}
-
-/* TASK CARDS */
-
-.task-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.task {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    padding: 16px;
-    border-radius: 17px;
-    border-left: 5px solid var(--task-color);
-    box-shadow: 0 5px 18px #6950a30c;
-    animation: slideIn .3s ease;
-    transition: .2s;
-}
-
-.task:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 9px 22px #6950a318;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.check {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    border: 2px solid #ded8ef;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.task.completed .check {
-    background: #62cda0;
-    border-color: #62cda0;
-}
-
-.task-text {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-.task.completed .task-text {
-    text-decoration: line-through;
-    color: #aaa4b8;
-}
-
-.task-actions {
-    display: flex;
-    gap: 6px;
-}
-
-.action-btn {
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: #f5f2ff;
-    color: #8269d5;
-    font-size: 15px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.action-btn:hover {
-    background: #eae3ff;
-    transform: scale(1.08);
-}
-
-.delete-btn {
-    color: #ef7195;
-    background: #fff1f5;
-}
-
-.delete-btn:hover {
-    background: #ffe0e9;
-}
-
-/* EMPTY STATE */
-
-.empty {
-    background: white;
-    border-radius: 19px;
-    padding: 36px 15px;
-    text-align: center;
-    color: #9992aa;
-    font-size: 12px;
-    box-shadow: 0 5px 18px #6950a30c;
-}
-
-.empty-emoji {
-    font-size: 37px;
-    margin-bottom: 9px;
-}
-
-/* HISTORY */
-
-.history-box {
-    margin-top: 30px;
-    padding: 21px;
-    background: white;
-    border-radius: 22px;
-    box-shadow: 0 7px 25px #6950a30d;
-}
-
-.history-box h2 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 20px;
-    font-weight: 900;
-    margin-bottom: 15px;
-}
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-}
-
-.history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 13px;
-    border-radius: 13px;
-    background: linear-gradient(110deg, #faf8ff, #fff8fb);
-}
-
-.history-date {
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.history-stats {
-    color: #9a94aa;
-    font-size: 10px;
-    margin-top: 4px;
-}
-
-.history-open {
-    border: none;
-    border-radius: 10px;
-    padding: 9px 13px;
-    color: #7959e8;
-    background: #eee9ff;
-    font-family: inherit;
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.history-open:hover {
-    background: #e2d9ff;
-}
-
-/* BACKUP */
-
-.backup {
-    display: flex;
-    gap: 10px;
-    margin-top: 19px;
-}
-
-.backup button {
-    flex: 1;
-    border: 1px solid #e8e1ff;
-    background: white;
-    color: #7959e8;
-    padding: 12px 8px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.backup button:hover {
-    background: #f4f0ff;
-}
-
-footer {
-    text-align: center;
-    color: #aaa3ba;
-    font-size: 11px;
-    margin: 26px 0 10px;
-}
-
-/* TOAST */
-
-.toast {
-    position: fixed;
-    bottom: 25px;
-    left: 50%;
-    transform: translate(-50%, 20px);
-    background: #342b50;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 30px;
-    font-size: 12px;
-    opacity: 0;
-    pointer-events: none;
-    transition: .3s;
-    z-index: 100;
-    text-align: center;
-    max-width: 90%;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translate(-50%, 0);
-}
-
-@media(max-width: 480px) {
-    body {
-        padding: 15px 12px;
-    }
-
-    .hero {
-        padding: 24px 21px;
-    }
-
-    .hero h1 {
-        font-size: 23px;
-    }
-
-    .logo {
-        font-size: 25px;
-    }
-
-    .date-section {
-        padding: 15px;
-    }
-
-    .date-buttons {
-        gap: 7px;
-    }
-
-    .date-btn {
-        padding: 10px 12px;
-    }
-
-    .task {
-        padding: 13px 11px;
-    }
-
-    .history-box {
-        padding: 16px;
-    }
-}
+:root{--purple:#7959e8;--pink:#ff78ad;--blue:#65b8ef;--yellow:#ffc96b;--green:#65d5a5;--text:#30294a;--muted:#918ba8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:radial-gradient(circle at 5% 5%,#f1eaff 0,transparent 30%),radial-gradient(circle at 95% 15%,#ffe9f2 0,transparent 30%),linear-gradient(135deg,#f8f6ff,#fff8fb);color:var(--text);min-height:100vh;padding:22px 15px}
+.app{max-width:720px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.logo{font-family:'Nunito',sans-serif;font-size:29px;font-weight:900;letter-spacing:-1px;color:#7656e7}
+.logo span{color:#ff78ad}.logo small{font-size:17px}.header-date{color:#918ba8;font-size:12px;font-weight:700}
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:29px;color:white;background:linear-gradient(120deg,#7252df,#a178f3 60%,#d58ae9);box-shadow:0 14px 35px #8563e638;margin-bottom:23px}
+.hero:before{content:"✦";position:absolute;right:30px;top:-30px;font-size:145px;opacity:.13}.hero:after{content:"✧";position:absolute;right:120px;bottom:-35px;font-size:105px;opacity:.15}
+.hero-content{position:relative;z-index:1}.hero h1{font-family:'Nunito',sans-serif;font-size:27px;font-weight:900;margin-bottom:6px}.hero p{font-size:13px;opacity:.9}
+.progress-info{display:flex;justify-content:space-between;align-items:center;margin-top:25px;font-size:12px;font-weight:700}
+.progress-track{width:100%;height:11px;border-radius:20px;background:#ffffff40;margin-top:9px;overflow:hidden}
+.progress-fill{width:0%;height:100%;background:linear-gradient(90deg,#fff,#ffe3f0);border-radius:20px;transition:width .5s ease}
+.date-section{background:white;border-radius:22px;padding:19px;box-shadow:0 7px 25px #6950a30d;margin-bottom:25px}
+.section-label{color:#9991ae;font-size:11px;font-weight:800;letter-spacing:1.5px;margin-bottom:13px}
+.date-buttons{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.date-btn{border:1px solid #eae4ff;background:#faf9ff;color:#7959e8;border-radius:13px;padding:11px 17px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:.25s}
+.date-btn:hover{transform:translateY(-2px);box-shadow:0 5px 13px #7959e825}
+.date-btn.active{color:white;border-color:transparent;background:linear-gradient(120deg,#7655e5,#a47cf0);box-shadow:0 5px 14px #7959e840}
+.date-picker{min-width:130px;max-width:100%;padding:10px;border:1px solid #eae4ff;border-radius:12px;background:#faf9ff;color:#7959e8;font-family:inherit;font-size:11px;font-weight:700}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:0 3px 14px}
+.section-heading h2,.history-box h2{font-family:'Nunito',sans-serif;font-size:21px;font-weight:900}.task-count{color:#9690a9;font-size:11px;font-weight:700}
+.add-box{background:white;padding:16px;border-radius:20px;box-shadow:0 7px 25px #6950a30d;margin-bottom:17px}
+.input-row{display:flex;gap:10px}
+#taskInput{flex:1;min-width:0;border:2px solid #f0ecfa;background:#fbfaff;border-radius:13px;padding:14px;outline:none;font-family:inherit;font-size:13px;color:var(--text);transition:.2s}
+#taskInput:focus{border-color:#a58cf0;background:white}
+.add-btn{width:49px;min-width:49px;border:0;border-radius:14px;background:linear-gradient(135deg,#7858e7,#a17cf1);color:white;font-size:27px;font-weight:500;cursor:pointer;box-shadow:0 5px 13px #7959e83b;transition:.2s}
+.add-btn:hover{transform:scale(1.06) rotate(5deg)}
+.task-list{display:flex;flex-direction:column;gap:12px}
+.task{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:white;padding:16px;border-radius:17px;border-left:5px solid var(--task-color);box-shadow:0 5px 18px #6950a30c;animation:slideIn .3s ease;transition:.2s}
+.task:hover{box-shadow:0 9px 22px #6950a318}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.task-main{display:flex;align-items:center;gap:12px;width:100%;min-width:0}
+.check{width:24px;height:24px;min-width:24px;border:2px solid #ded8ef;border-radius:8px;display:flex;justify-content:center;align-items:center;color:white;font-size:14px;cursor:pointer;transition:.2s}
+.task.completed .check{background:#62cda0;border-color:#62cda0}
+.task-text{flex:1;min-width:0;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.task.completed .task-text{text-decoration:line-through;color:#aaa4b8}
+.task-actions{display:flex;gap:6px;flex-shrink:0}
+.action-btn{border:0;width:32px;height:32px;border-radius:10px;background:#f5f2ff;color:#8269d5;font-size:15px;cursor:pointer;transition:.2s}
+.action-btn:hover{background:#eae3ff;transform:scale(1.08)}
+.delete-btn{color:#ef7195;background:#fff1f5}.delete-btn:hover{background:#ffe0e9}
+.dropdown-btn{font-size:18px}
+.task-details{display:none;width:100%;padding:12px 4px 2px 36px;border-top:1px solid #f0ecfa;margin-top:2px}
+.task-details.open{display:block}
+.details-label{font-size:11px;font-weight:800;color:#918ba8;margin-bottom:7px}
+.task-description{width:100%;min-height:65px;resize:vertical;border:1px solid #eae4ff;border-radius:11px;padding:10px;font-family:inherit;font-size:12px;color:#30294a;outline:none;background:#fbfaff}
+.task-description:focus{border-color:#a58cf0}
+.color-options{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.color-dot{width:25px;height:25px;border-radius:50%;border:2px solid white;outline:1px solid #ddd;cursor:pointer}
+.color-dot.selected{outline:2px solid #30294a}
+.empty{background:white;border-radius:19px;padding:36px 15px;text-align:center;color:#9992aa;font-size:12px;box-shadow:0 5px 18px #6950a30c}
+.empty-emoji{font-size:37px;margin-bottom:9px}
+.history-box{margin-top:30px;padding:21px;background:white;border-radius:22px;box-shadow:0 7px 25px #6950a30d}
+.history-box h2{font-size:20px;margin-bottom:15px}.history-list{display:flex;flex-direction:column;gap:9px}
+.history-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px;border-radius:13px;background:linear-gradient(110deg,#faf8ff,#fff8fb)}
+.history-date{font-size:12px;font-weight:800}.history-stats{color:#9a94aa;font-size:10px;margin-top:4px}
+.history-open{border:0;border-radius:10px;padding:9px 13px;color:#7959e8;background:#eee9ff;font-family:inherit;font-size:10px;font-weight:800;cursor:pointer}
+.history-open:hover{background:#e2d9ff}
+.backup{display:flex;gap:10px;margin-top:19px}.backup button{flex:1;border:1px solid #e8e1ff;background:white;color:#7959e8;padding:12px 8px;border-radius:12px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.backup button:hover{background:#f4f0ff}
+footer{text-align:center;color:#aaa3ba;font-size:11px;margin:26px 0 10px}
+.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#342b50;color:white;padding:12px 20px;border-radius:30px;font-size:12px;opacity:0;pointer-events:none;transition:.3s;z-index:100;text-align:center;max-width:90%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:480px){body{padding:15px 12px}.hero{padding:24px 21px}.hero h1{font-size:23px}.logo{font-size:25px}.date-section{padding:15px}.date-buttons{gap:7px}.date-btn{padding:10px 12px}.task{padding:13px 11px}.history-box{padding:16px}.task-details{padding-left:8px}}
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
-<header>
-    <div class="logo">Day<span>Spark</span> <small>✦</small></div>
-    <div class="header-date" id="headerDate"></div>
-</header>
-
-<section class="hero">
-    <div class="hero-content">
-        <h1 id="greeting">Make today count! ✨</h1>
-        <p id="heroSubtitle">Small steps lead to big achievements.</p>
-
-        <div class="progress-info">
-            <span>✦ Your daily progress</span>
-            <span id="progressText">0%</span>
-        </div>
-
-        <div class="progress-track">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-    </div>
-</section>
-
-<section class="date-section">
-    <div class="section-label">PLAN YOUR DAY ✨</div>
-
-    <div class="date-buttons">
-        <button class="date-btn active" id="todayBtn" onclick="selectToday()">
-            ☀ Today
-        </button>
-
-        <button class="date-btn" id="tomorrowBtn" onclick="selectTomorrow()">
-            Tomorrow →
-        </button>
-
-        <input
-            type="date"
-            class="date-picker"
-            id="datePicker"
-            onchange="selectCustomDate(this.value)"
-        >
-    </div>
-</section>
-
-<div class="section-heading">
-    <h2 id="taskHeading">Today's Tasks</h2>
-    <span class="task-count" id="taskCount">0 tasks</span>
-</div>
-
-<section class="add-box">
-    <div class="input-row">
-        <input
-            type="text"
-            id="taskInput"
-            placeholder="What do you want to accomplish? ✨"
-            maxlength="120"
-        >
-        <button class="add-btn" onclick="addTask()">+</button>
-    </div>
-</section>
-
+<header><div class="logo">Day<span>Spark</span> <small>✦</small></div><div class="header-date" id="headerDate"></div></header>
+<section class="hero"><div class="hero-content">
+<h1 id="greeting">Make today count! ✨</h1><p id="heroSubtitle">Small steps lead to big achievements.</p>
+<div class="progress-info"><span>✦ Your daily progress</span><span id="progressText">0%</span></div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div></section>
+<section class="date-section"><div class="section-label">PLAN YOUR DAY ✨</div><div class="date-buttons">
+<button class="date-btn active" id="todayBtn" onclick="selectToday()">☀ Today</button>
+<button class="date-btn" id="tomorrowBtn" onclick="selectTomorrow()">Tomorrow →</button>
+<input type="date" class="date-picker" id="datePicker" onchange="selectCustomDate(this.value)">
+</div></section>
+<div class="section-heading"><h2 id="taskHeading">Today's Tasks</h2><span class="task-count" id="taskCount">0 tasks</span></div>
+<section class="add-box"><div class="input-row">
+<input type="text" id="taskInput" placeholder="What do you want to accomplish? ✨" maxlength="120">
+<button class="add-btn" onclick="addTask()">+</button>
+</div></section>
 <section class="task-list" id="taskList"></section>
-
-<section class="history-box">
-    <h2>📅 Your Daily History</h2>
-    <div class="history-list" id="historyList"></div>
-</section>
-
+<section class="history-box"><h2>📅 Your Daily History</h2><div class="history-list" id="historyList"></div></section>
 <section class="backup">
-    <button onclick="exportData()">↥ Export Backup</button>
-    <button onclick="document.getElementById('importFile').click()">↧ Import Backup</button>
-    <input
-        type="file"
-        id="importFile"
-        accept=".json,application/json"
-        hidden
-        onchange="importData(event)"
-    >
+<button onclick="exportData()">↥ Export Backup</button>
+<button onclick="document.getElementById('importFile').click()">↧ Import Backup</button>
+<input type="file" id="importFile" accept=".json,application/json" hidden onchange="importData(event)">
 </section>
-
-<footer>
-    Made with ✦ by DaySpark · Keep growing every day!
-</footer>
-
+<footer>Made with ✦ by DaySpark · Keep growing every day!</footer>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
 const STORAGE_KEY = "dayspark_tasks_v1";
-
 let selectedDate = getDateString(new Date());
 let allTasks = loadTasks();
+const colors = ["#a17cf1","#ff83b2","#65b8ef","#65d5a5","#ffc96b","#e69ad9","#ff9b83"];
 
-const colors = [
-    "#a17cf1",
-    "#ff83b2",
-    "#65b8ef",
-    "#65d5a5",
-    "#ffc96b",
-    "#e69ad9",
-    "#ff9b83"
-];
-
-function getDateString(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+function getDateString(date){
+ const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");
+ return `${y}-${m}-${d}`;
 }
-
-function loadTasks() {
-    try {
-        const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        return data && typeof data === "object" && !Array.isArray(data)
-            ? data
-            : {};
-    } catch {
-        return {};
-    }
+function loadTasks(){
+ try{
+  const data=JSON.parse(localStorage.getItem(STORAGE_KEY));
+  return data&&typeof data==="object"&&!Array.isArray(data)?data:{};
+ }catch{return {};}
 }
-
-function saveTasks() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
+// Keep the existing storage key and store only the fields each task needs.
+// Empty descriptions are omitted to avoid storing unnecessary text.
+function saveTasks(){
+ const compactData={};
+ Object.keys(allTasks).forEach(date=>{
+  compactData[date]=(allTasks[date]||[]).map(task=>{
+   const saved={id:task.id,text:task.text,completed:!!task.completed,color:task.color||"#a17cf1"};
+   if(task.description&&task.description.trim()) saved.description=task.description.trim();
+   return saved;
+  });
+ });
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(compactData));
 }
-
-function getTasks() {
-    return allTasks[selectedDate] || [];
+function getTasks(){return allTasks[selectedDate]||[];}
+function ensureDate(){if(!allTasks[selectedDate])allTasks[selectedDate]=[];}
+function formatDate(dateString){
+ return new Date(dateString+"T12:00:00").toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"short",year:"numeric"});
 }
-
-function ensureDate() {
-    if (!allTasks[selectedDate]) {
-        allTasks[selectedDate] = [];
-    }
+function showToast(message){
+ const toast=document.getElementById("toast");toast.textContent=message;toast.classList.add("show");
+ clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove("show"),2200);
 }
-
-function formatDate(dateString) {
-    const date = new Date(dateString + "T12:00:00");
-
-    return date.toLocaleDateString("en-IN", {
-        weekday: "long",
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
+function selectDate(date){if(!date)return;selectedDate=date;render();}
+function selectToday(){selectDate(getDateString(new Date()));}
+function selectTomorrow(){const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);selectDate(getDateString(tomorrow));}
+function selectCustomDate(date){if(date)selectDate(date);}
+function updateHeader(){
+ const today=getDateString(new Date()),tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+ const tomorrowString=getDateString(tomorrow),isToday=selectedDate===today,isTomorrow=selectedDate===tomorrowString;
+ document.getElementById("headerDate").textContent=new Date().toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});
+ document.getElementById("todayBtn").classList.toggle("active",isToday);
+ document.getElementById("tomorrowBtn").classList.toggle("active",isTomorrow);
+ document.getElementById("datePicker").value=selectedDate;
+ if(isToday){document.getElementById("taskHeading").textContent="Today's Tasks";document.getElementById("greeting").textContent="Make today count! ✨";document.getElementById("heroSubtitle").textContent="Small steps lead to big achievements.";}
+ else if(isTomorrow){document.getElementById("taskHeading").textContent="Tomorrow's Tasks";document.getElementById("greeting").textContent="Plan ahead! 🚀";document.getElementById("heroSubtitle").textContent="Prepare today for a more productive tomorrow.";}
+ else{document.getElementById("taskHeading").textContent=formatDate(selectedDate)+" Tasks";document.getElementById("greeting").textContent="Your plans, your progress! ✨";document.getElementById("heroSubtitle").textContent="Every day is a new opportunity.";}
 }
-
-function showToast(message) {
-    const toast = document.getElementById("toast");
-
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2200);
+function addTask(){
+ const input=document.getElementById("taskInput"),text=input.value.trim();
+ if(!text){showToast("Please enter a task first!");input.focus();return;}
+ ensureDate();allTasks[selectedDate].push({id:Date.now().toString()+Math.random().toString(16).slice(2),text,completed:false,color:colors[Math.floor(Math.random()*colors.length)]});
+ saveTasks();input.value="";render();showToast("Task added! ✨");
 }
-
-/* DATE NAVIGATION */
-
-function selectDate(date) {
-    if (!date) return;
-    selectedDate = date;
-    render();
+function toggleTask(id){
+ const task=getTasks().find(t=>t.id===id);if(!task)return;task.completed=!task.completed;
+ saveTasks();render();if(task.completed)showToast("Amazing work! 🎉");
 }
-
-function selectToday() {
-    selectDate(getDateString(new Date()));
+function editTask(id){
+ const task=getTasks().find(t=>t.id===id);if(!task)return;
+ const newText=prompt("Edit your task:",task.text);if(newText===null)return;
+ if(!newText.trim()){showToast("Task cannot be empty!");return;}
+ task.text=newText.trim();saveTasks();render();showToast("Task updated! ✨");
 }
-
-function selectTomorrow() {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    selectDate(getDateString(tomorrow));
+function deleteTask(id){
+ if(!confirm("Are you sure you want to delete this task?"))return;
+ allTasks[selectedDate]=getTasks().filter(t=>t.id!==id);saveTasks();render();showToast("Task deleted.");
 }
-
-function selectCustomDate(date) {
-    if (date) selectDate(date);
+function renderTasks(){
+ const list=document.getElementById("taskList"),tasks=getTasks();list.innerHTML="";
+ if(tasks.length===0){
+  const empty=document.createElement("div");empty.className="empty";
+  const emoji=document.createElement("div");emoji.className="empty-emoji";emoji.textContent="🌈";
+  const title=document.createElement("strong");title.textContent="Nothing planned yet!";
+  const message=document.createElement("p");message.style.marginTop="7px";message.textContent="Add your first task and make this day count.";
+  empty.append(emoji,title,message);list.appendChild(empty);
+ }
+ tasks.forEach(task=>{
+  const item=document.createElement("div");item.className="task"+(task.completed?" completed":"");
+  item.style.setProperty("--task-color",task.color||"#a17cf1");
+  const main=document.createElement("div");main.className="task-main";
+  const check=document.createElement("div");check.className="check";check.textContent=task.completed?"✓":"";
+  check.addEventListener("click",()=>toggleTask(task.id));
+  const text=document.createElement("div");text.className="task-text";text.textContent=task.text;
+  const actions=document.createElement("div");actions.className="task-actions";
+  const dropdown=document.createElement("button");dropdown.className="action-btn dropdown-btn";dropdown.textContent="⌄";dropdown.title="Task details";dropdown.setAttribute("aria-label","Show task details");
+  const edit=document.createElement("button");edit.className="action-btn";edit.textContent="✎";edit.title="Edit task";edit.addEventListener("click",()=>editTask(task.id));
+  const remove=document.createElement("button");remove.className="action-btn delete-btn";remove.textContent="×";remove.title="Delete task";remove.addEventListener("click",()=>deleteTask(task.id));
+  actions.append(dropdown,edit,remove);main.append(check,text,actions);
+  const details=document.createElement("div");details.className="task-details";
+  const label=document.createElement("div");label.className="details-label";label.textContent="TASK DESCRIPTION";
+  const description=document.createElement("textarea");description.className="task-description";description.placeholder="Explain your task or add notes...";description.maxLength=1000;description.value=task.description||"";
+  // Save on blur rather than on every keystroke, keeping writes to storage lower.
+  description.addEventListener("change",()=>{task.description=description.value;saveTasks();});
+  description.addEventListener("blur",()=>{task.description=description.value;saveTasks();});
+  const colorLabel=document.createElement("div");colorLabel.className="details-label";colorLabel.style.marginTop="13px";colorLabel.textContent="CHOOSE TASK COLOUR";
+  const colorOptions=document.createElement("div");colorOptions.className="color-options";
+  colors.forEach(color=>{
+   const dot=document.createElement("button");dot.className="color-dot";dot.style.background=color;dot.title="Choose colour";dot.setAttribute("aria-label","Choose task colour");
+   if((task.color||"#a17cf1")===color)dot.classList.add("selected");
+   dot.addEventListener("click",()=>{
+    task.color=color;item.style.setProperty("--task-color",color);
+    colorOptions.querySelectorAll(".color-dot").forEach(button=>button.classList.remove("selected"));
+    dot.classList.add("selected");saveTasks();
+   });
+   colorOptions.appendChild(dot);
+  });
+  details.append(label,description,colorLabel,colorOptions);
+  dropdown.addEventListener("click",()=>{
+   const open=details.classList.toggle("open");dropdown.textContent=open?"⌃":"⌄";
+   dropdown.setAttribute("aria-label",open?"Hide task details":"Show task details");
+  });
+  item.append(main,details);list.appendChild(item);
+ });
+ const completed=tasks.filter(t=>t.completed).length,total=tasks.length,percentage=total===0?0:Math.round(completed/total*100);
+ document.getElementById("taskCount").textContent=`${completed}/${total} completed`;
+ document.getElementById("progressText").textContent=percentage+"%";
+ document.getElementById("progressFill").style.width=percentage+"%";
 }
-
-function updateHeader() {
-    const today = getDateString(new Date());
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const tomorrowString = getDateString(tomorrow);
-
-    const isToday = selectedDate === today;
-    const isTomorrow = selectedDate === tomorrowString;
-
-    document.getElementById("headerDate").textContent =
-        new Date().toLocaleDateString("en-IN", {
-            weekday: "short",
-            day: "numeric",
-            month: "short"
-        });
-
-    document.getElementById("todayBtn").classList.toggle("active", isToday);
-    document.getElementById("tomorrowBtn").classList.toggle("active", isTomorrow);
-
-    document.getElementById("datePicker").value = selectedDate;
-
-    if (isToday) {
-        document.getElementById("taskHeading").textContent = "Today's Tasks";
-        document.getElementById("greeting").textContent = "Make today count! ✨";
-        document.getElementById("heroSubtitle").textContent =
-            "Small steps lead to big achievements.";
-    } else if (isTomorrow) {
-        document.getElementById("taskHeading").textContent = "Tomorrow's Tasks";
-        document.getElementById("greeting").textContent = "Plan ahead! 🚀";
-        document.getElementById("heroSubtitle").textContent =
-            "Prepare today for a more productive tomorrow.";
-    } else {
-        document.getElementById("taskHeading").textContent =
-            formatDate(selectedDate) + " Tasks";
-        document.getElementById("greeting").textContent = "Your plans, your progress! ✨";
-        document.getElementById("heroSubtitle").textContent =
-            "Every day is a new opportunity.";
-    }
+function renderHistory(){
+ const history=document.getElementById("historyList");history.innerHTML="";
+ const dates=Object.keys(allTasks).sort((a,b)=>b.localeCompare(a));
+ if(dates.length===0){const empty=document.createElement("div");empty.className="empty";empty.textContent="Your daily history will appear here. 🌱";history.appendChild(empty);return;}
+ dates.forEach(date=>{
+  const tasks=allTasks[date]||[],completed=tasks.filter(t=>t.completed).length;
+  const item=document.createElement("div");item.className="history-item";
+  const info=document.createElement("div"),dateText=document.createElement("div");dateText.className="history-date";dateText.textContent=formatDate(date);
+  const stats=document.createElement("div");stats.className="history-stats";stats.textContent=`${completed} of ${tasks.length} tasks completed`;info.append(dateText,stats);
+  const button=document.createElement("button");button.className="history-open";button.textContent=date===selectedDate?"Viewing ✓":"View";button.addEventListener("click",()=>selectDate(date));
+  item.append(info,button);history.appendChild(item);
+ });
 }
-
-/* ADD TASK */
-
-function addTask() {
-    const input = document.getElementById("taskInput");
-    const text = input.value.trim();
-
-    if (!text) {
-        showToast("Please enter a task first!");
-        input.focus();
-        return;
-    }
-
-    ensureDate();
-
-    allTasks[selectedDate].push({
-        id: Date.now().toString() + Math.random().toString(16).slice(2),
-        text: text,
-        completed: false,
-        color: colors[Math.floor(Math.random() * colors.length)]
-    });
-
-    saveTasks();
-    input.value = "";
-    render();
-
-    showToast("Task added! ✨");
+function exportData(){
+ const blob=new Blob([JSON.stringify(allTasks,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),link=document.createElement("a");
+ link.href=url;link.download="dayspark-backup.json";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast("Backup downloaded! ✨");
 }
-
-/* COMPLETE TASK */
-
-function toggleTask(id) {
-    const task = getTasks().find(t => t.id === id);
-    if (!task) return;
-
-    task.completed = !task.completed;
-
-    saveTasks();
-    render();
-
-    if (task.completed) {
-        showToast("Amazing work! 🎉");
-    }
+function importData(event){
+ const file=event.target.files[0];if(!file)return;const reader=new FileReader();
+ reader.onload=function(e){
+  try{
+   const imported=JSON.parse(e.target.result);
+   if(!imported||typeof imported!=="object"||Array.isArray(imported))throw new Error("Invalid backup");
+   if(!confirm("Import backup? Existing tasks will be replaced.")){event.target.value="";return;}
+   allTasks=imported;saveTasks();render();showToast("Backup imported successfully! 🎉");
+  }catch{showToast("Invalid backup file.");}
+  event.target.value="";
+ };
+ reader.readAsText(file);
 }
-
-/* EDIT TASK */
-
-function editTask(id) {
-    const task = getTasks().find(t => t.id === id);
-    if (!task) return;
-
-    const newText = prompt("Edit your task:", task.text);
-
-    if (newText === null) return;
-
-    if (!newText.trim()) {
-        showToast("Task cannot be empty!");
-        return;
-    }
-
-    task.text = newText.trim();
-
-    saveTasks();
-    render();
-    showToast("Task updated! ✨");
-}
-
-/* DELETE TASK */
-
-function deleteTask(id) {
-    if (!confirm("Are you sure you want to delete this task?")) return;
-
-    allTasks[selectedDate] = getTasks().filter(t => t.id !== id);
-
-    saveTasks();
-    render();
-    showToast("Task deleted.");
-}
-
-/* RENDER TASKS */
-
-function renderTasks() {
-    const list = document.getElementById("taskList");
-    const tasks = getTasks();
-
-    list.innerHTML = "";
-
-    if (tasks.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-
-        const emoji = document.createElement("div");
-        emoji.className = "empty-emoji";
-        emoji.textContent = "🌈";
-
-        const title = document.createElement("strong");
-        title.textContent = "Nothing planned yet!";
-
-        const message = document.createElement("p");
-        message.style.marginTop = "7px";
-        message.textContent = "Add your first task and make this day count.";
-
-        empty.append(emoji, title, message);
-        list.appendChild(empty);
-    }
-
-    tasks.forEach(task => {
-        const item = document.createElement("div");
-        item.className = "task" + (task.completed ? " completed" : "");
-        item.style.setProperty("--task-color", task.color || "#a17cf1");
-
-        const check = document.createElement("div");
-        check.className = "check";
-        check.textContent = task.completed ? "✓" : "";
-        check.addEventListener("click", () => toggleTask(task.id));
-
-        const text = document.createElement("div");
-        text.className = "task-text";
-        text.textContent = task.text;
-
-        const actions = document.createElement("div");
-        actions.className = "task-actions";
-
-        const edit = document.createElement("button");
-        edit.className = "action-btn";
-        edit.textContent = "✎";
-        edit.title = "Edit task";
-        edit.addEventListener("click", () => editTask(task.id));
-
-        const remove = document.createElement("button");
-        remove.className = "action-btn delete-btn";
-        remove.textContent = "×";
-        remove.title = "Delete task";
-        remove.addEventListener("click", () => deleteTask(task.id));
-
-        actions.append(edit, remove);
-        item.append(check, text, actions);
-
-        list.appendChild(item);
-    });
-
-    const completed = tasks.filter(t => t.completed).length;
-    const total = tasks.length;
-
-    const percentage = total === 0
-        ? 0
-        : Math.round((completed / total) * 100);
-
-    document.getElementById("taskCount").textContent =
-        `${completed}/${total} completed`;
-
-    document.getElementById("progressText").textContent =
-        percentage + "%";
-
-    document.getElementById("progressFill").style.width =
-        percentage + "%";
-}
-
-/* HISTORY */
-
-function renderHistory() {
-    const history = document.getElementById("historyList");
-    history.innerHTML = "";
-
-    const dates = Object.keys(allTasks).sort((a, b) => b.localeCompare(a));
-
-    if (dates.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "Your daily history will appear here. 🌱";
-        history.appendChild(empty);
-        return;
-    }
-
-    dates.forEach(date => {
-        const tasks = allTasks[date] || [];
-        const completed = tasks.filter(t => t.completed).length;
-
-        const item = document.createElement("div");
-        item.className = "history-item";
-
-        const info = document.createElement("div");
-
-        const dateText = document.createElement("div");
-        dateText.className = "history-date";
-        dateText.textContent = formatDate(date);
-
-        const stats = document.createElement("div");
-        stats.className = "history-stats";
-        stats.textContent =
-            `${completed} of ${tasks.length} tasks completed`;
-
-        info.append(dateText, stats);
-
-        const button = document.createElement("button");
-        button.className = "history-open";
-        button.textContent = date === selectedDate ? "Viewing ✓" : "View";
-        button.addEventListener("click", () => selectDate(date));
-
-        item.append(info, button);
-        history.appendChild(item);
-    });
-}
-
-/* BACKUP */
-
-function exportData() {
-    const blob = new Blob(
-        [JSON.stringify(allTasks, null, 2)],
-        { type: "application/json" }
-    );
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "dayspark-backup.json";
-    link.click();
-
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-    showToast("Backup downloaded! ✨");
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-        try {
-            const imported = JSON.parse(e.target.result);
-
-            if (
-                !imported ||
-                typeof imported !== "object" ||
-                Array.isArray(imported)
-            ) {
-                throw new Error("Invalid backup");
-            }
-
-            if (!confirm("Import backup? Existing tasks will be replaced.")) {
-                event.target.value = "";
-                return;
-            }
-
-            allTasks = imported;
-            saveTasks();
-            render();
-
-            showToast("Backup imported successfully! 🎉");
-        } catch {
-            showToast("Invalid backup file.");
-        }
-
-        event.target.value = "";
-    };
-
-    reader.readAsText(file);
-}
-
-/* MAIN RENDER */
-
-function render() {
-    updateHeader();
-    renderTasks();
-    renderHistory();
-}
-
-/* ENTER KEY */
-
-document.getElementById("taskInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
-        addTask();
-    }
-});
-
+function render(){updateHeader();renderTasks();renderHistory();}
+document.getElementById("taskInput").addEventListener("keydown",function(e){if(e.key==="Enter")addTask();});
 render();
 </script>
 <script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-            .catch(error => console.error("SW registration failed:", error));
-    });
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").catch(error=>console.error("SW registration failed:",error));});
 }
 </script>
 </body>
