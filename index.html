@@ -76,6 +76,25 @@ footer{text-align:center;color:#aaa3ba;font-size:11px;margin:26px 0 10px}
 .toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#342b50;color:white;padding:12px 20px;border-radius:30px;font-size:12px;opacity:0;pointer-events:none;transition:.3s;z-index:100;text-align:center;max-width:90%}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:480px){body{padding:15px 12px}.hero{padding:24px 21px}.hero h1{font-size:23px}.logo{font-size:25px}.date-section{padding:15px}.date-buttons{gap:7px}.date-btn{padding:10px 12px}.task{padding:13px 11px}.history-box{padding:16px}.task-details{padding-left:8px}}
+
+/* AUTO-DELETE SETTINGS */
+.settings-box{background:white;padding:17px 18px;border-radius:20px;box-shadow:0 7px 25px #6950a30d;margin:-8px 0 24px}
+.settings-intro{font-size:11px;color:#9991ae;margin:-5px 0 12px;line-height:1.5}
+.setting-option{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #f1edfa;cursor:pointer}
+.setting-option strong{display:block;font-size:12px;color:#40375c}
+.setting-option small{display:block;font-size:10px;color:#9991ae;margin-top:3px;line-height:1.4}
+.setting-option input{appearance:none;-webkit-appearance:none;width:42px;height:24px;min-width:42px;border-radius:20px;background:#e6e1ef;position:relative;cursor:pointer;transition:.2s}
+.setting-option input:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:white;box-shadow:0 1px 4px #0002;transition:.2s}
+.setting-option input:checked{background:#7959e8}
+.setting-option input:checked:before{transform:translateX(18px)}
+.move-btn{color:#5d9dce;background:#eef8ff;font-size:17px}
+.move-btn:hover{background:#dff1ff}
+.move-panel{margin-top:15px;padding-top:12px;border-top:1px solid #f0ecfa}
+.move-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.move-date{min-width:145px;flex:1;padding:10px;border:1px solid #eae4ff;border-radius:10px;background:#fbfaff;color:#7959e8;font-family:inherit;font-size:11px}
+.move-confirm{border:0;border-radius:10px;padding:10px 13px;background:linear-gradient(120deg,#7655e5,#a47cf0);color:white;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer}
+@media(max-width:480px){.settings-box{padding:15px}.move-date{min-width:130px}}
+
 </style>
 </head>
 <body>
@@ -91,6 +110,19 @@ footer{text-align:center;color:#aaa3ba;font-size:11px;margin:26px 0 10px}
 <button class="date-btn" id="tomorrowBtn" onclick="selectTomorrow()">Tomorrow →</button>
 <input type="date" class="date-picker" id="datePicker" onchange="selectCustomDate(this.value)">
 </div></section>
+
+<section class="settings-box">
+ <div class="section-label">AUTOMATIC TASK CLEANUP ⚙️</div>
+ <p class="settings-intro">Choose one cleanup rule. Turning one on automatically turns the other off.</p>
+ <label class="setting-option" for="autoDeleteYesterday">
+  <span><strong>Delete yesterday's tasks</strong><small>Automatically clear tasks from yesterday only.</small></span>
+  <input type="checkbox" id="autoDeleteYesterday" onchange="changeAutoDelete('yesterday',this.checked)">
+ </label>
+ <label class="setting-option" for="autoDeleteAllPrevious">
+  <span><strong>Delete all previous days' tasks</strong><small>Automatically clear tasks dated before today.</small></span>
+  <input type="checkbox" id="autoDeleteAllPrevious" onchange="changeAutoDelete('all',this.checked)">
+ </label>
+</section>
 <div class="section-heading"><h2 id="taskHeading">Today's Tasks</h2><span class="task-count" id="taskCount">0 tasks</span></div>
 <section class="add-box"><div class="input-row">
 <input type="text" id="taskInput" placeholder="What do you want to accomplish? ✨" maxlength="120">
@@ -111,11 +143,57 @@ const STORAGE_KEY = "dayspark_tasks_v1";
 let selectedDate = getDateString(new Date());
 let allTasks = loadTasks();
 const colors = ["#a17cf1","#ff83b2","#65b8ef","#65d5a5","#ffc96b","#e69ad9","#ff9b83"];
+const SETTINGS_KEY = "dayspark_settings_v1";
+let autoDeleteSettings = loadAutoDeleteSettings();
 
 function getDateString(date){
  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");
  return `${y}-${m}-${d}`;
 }
+function loadAutoDeleteSettings(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(SETTINGS_KEY));
+  return {yesterday:!!(saved&&saved.yesterday),allPrevious:!!(saved&&saved.allPrevious&&!saved.yesterday)};
+ }catch{return {yesterday:false,allPrevious:false};}
+}
+function saveAutoDeleteSettings(){
+ localStorage.setItem(SETTINGS_KEY,JSON.stringify(autoDeleteSettings));
+}
+function updateAutoDeleteControls(){
+ document.getElementById("autoDeleteYesterday").checked=autoDeleteSettings.yesterday;
+ document.getElementById("autoDeleteAllPrevious").checked=autoDeleteSettings.allPrevious;
+}
+function applyAutoDelete(){
+ const today=getDateString(new Date());
+ const yesterdayDate=new Date();yesterdayDate.setDate(yesterdayDate.getDate()-1);
+ const yesterday=getDateString(yesterdayDate);
+ let removed=0,changed=false;
+ if(autoDeleteSettings.allPrevious){
+  Object.keys(allTasks).forEach(date=>{if(date<today){removed+=(allTasks[date]||[]).length;delete allTasks[date];changed=true;}});
+ }else if(autoDeleteSettings.yesterday&&Object.prototype.hasOwnProperty.call(allTasks,yesterday)){
+  removed+=(allTasks[yesterday]||[]).length;delete allTasks[yesterday];changed=true;
+ }
+ if(changed)saveTasks();
+ return removed;
+}
+function changeAutoDelete(mode,enabled){
+ const message=mode==="yesterday"
+  ? "Turn on automatic deletion of yesterday's tasks? Tasks already dated yesterday will be deleted now. This cannot be undone."
+  : "Turn on automatic deletion of ALL tasks dated before today? Previous-day history will be deleted now. This cannot be undone.";
+ if(enabled&&!confirm(message)){updateAutoDeleteControls();return;}
+ if(mode==="yesterday"){
+  autoDeleteSettings.yesterday=enabled;
+  if(enabled)autoDeleteSettings.allPrevious=false;
+ }else{
+  autoDeleteSettings.allPrevious=enabled;
+  if(enabled)autoDeleteSettings.yesterday=false;
+ }
+ saveAutoDeleteSettings();updateAutoDeleteControls();
+ const removed=enabled?applyAutoDelete():0;
+ render();
+ showToast(enabled?(removed?`${removed} previous task(s) deleted.`:"Auto-delete enabled."):"Auto-delete turned off.");
+}
+
 function loadTasks(){
  try{
   const data=JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -179,6 +257,19 @@ function deleteTask(id){
  if(!confirm("Are you sure you want to delete this task?"))return;
  allTasks[selectedDate]=getTasks().filter(t=>t.id!==id);saveTasks();render();showToast("Task deleted.");
 }
+function moveTask(id,destinationDate){
+ if(!destinationDate){showToast("Please choose a destination day.");return;}
+ if(destinationDate===selectedDate){showToast("Choose a different day to move this task.");return;}
+ const sourceTasks=allTasks[selectedDate]||[];
+ const task=sourceTasks.find(t=>t.id===id);
+ if(!task)return;
+ if(!allTasks[destinationDate])allTasks[destinationDate]=[];
+ allTasks[destinationDate].push(task);
+ allTasks[selectedDate]=sourceTasks.filter(t=>t.id!==id);
+ if(allTasks[selectedDate].length===0)delete allTasks[selectedDate];
+ saveTasks();render();showToast("Task moved to "+formatDate(destinationDate)+". ✨");
+}
+
 function renderTasks(){
  const list=document.getElementById("taskList"),tasks=getTasks();list.innerHTML="";
  if(tasks.length===0){
@@ -199,7 +290,8 @@ function renderTasks(){
   const dropdown=document.createElement("button");dropdown.className="action-btn dropdown-btn";dropdown.textContent="⌄";dropdown.title="Task details";dropdown.setAttribute("aria-label","Show task details");
   const edit=document.createElement("button");edit.className="action-btn";edit.textContent="✎";edit.title="Edit task";edit.addEventListener("click",()=>editTask(task.id));
   const remove=document.createElement("button");remove.className="action-btn delete-btn";remove.textContent="×";remove.title="Delete task";remove.addEventListener("click",()=>deleteTask(task.id));
-  actions.append(dropdown,edit,remove);main.append(check,text,actions);
+  const move=document.createElement("button");move.className="action-btn move-btn";move.textContent="↗";move.title="Move task to another day";move.setAttribute("aria-label","Move task to another day");
+  actions.append(dropdown,move,edit,remove);main.append(check,text,actions);
   const details=document.createElement("div");details.className="task-details";
   const label=document.createElement("div");label.className="details-label";label.textContent="TASK DESCRIPTION";
   const description=document.createElement("textarea");description.className="task-description";description.placeholder="Explain your task or add notes...";description.maxLength=1000;description.value=task.description||"";
@@ -218,11 +310,20 @@ function renderTasks(){
    });
    colorOptions.appendChild(dot);
   });
-  details.append(label,description,colorLabel,colorOptions);
+  const movePanel=document.createElement("div");movePanel.className="move-panel";
+  const moveLabel=document.createElement("div");moveLabel.className="details-label";moveLabel.textContent="MOVE THIS TASK TO ANOTHER DAY";
+  const moveRow=document.createElement("div");moveRow.className="move-row";
+  const moveDate=document.createElement("input");moveDate.type="date";moveDate.className="move-date";moveDate.value=selectedDate;
+  const moveConfirm=document.createElement("button");moveConfirm.className="move-confirm";moveConfirm.textContent="Move task";
+  moveConfirm.addEventListener("click",()=>moveTask(task.id,moveDate.value));
+  moveRow.append(moveDate,moveConfirm);movePanel.append(moveLabel,moveRow);
+  details.append(label,description,colorLabel,colorOptions,movePanel);
+  function openDetails(){details.classList.add("open");dropdown.textContent="⌃";dropdown.setAttribute("aria-label","Hide task details");}
   dropdown.addEventListener("click",()=>{
    const open=details.classList.toggle("open");dropdown.textContent=open?"⌃":"⌄";
    dropdown.setAttribute("aria-label",open?"Hide task details":"Show task details");
   });
+  move.addEventListener("click",()=>{openDetails();moveDate.focus();});
   item.append(main,details);list.appendChild(item);
  });
  const completed=tasks.filter(t=>t.completed).length,total=tasks.length,percentage=total===0?0:Math.round(completed/total*100);
@@ -262,6 +363,8 @@ function importData(event){
 }
 function render(){updateHeader();renderTasks();renderHistory();}
 document.getElementById("taskInput").addEventListener("keydown",function(e){if(e.key==="Enter")addTask();});
+updateAutoDeleteControls();
+applyAutoDelete();
 render();
 </script>
 <script>
